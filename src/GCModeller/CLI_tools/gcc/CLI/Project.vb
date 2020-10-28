@@ -1,42 +1,42 @@
-﻿#Region "Microsoft.VisualBasic::180627250b64e91813325e5017ffaa64, CLI_tools\gcc\CLI\Project.vb"
+﻿#Region "Microsoft.VisualBasic::5f26869fe697327686582c7e69790486, CLI_tools\gcc\CLI\Project.vb"
 
-' Author:
-' 
-'       asuka (amethyst.asuka@gcmodeller.org)
-'       xie (genetics@smrucc.org)
-'       xieguigang (xie.guigang@live.com)
-' 
-' Copyright (c) 2018 GPL3 Licensed
-' 
-' 
-' GNU GENERAL PUBLIC LICENSE (GPL3)
-' 
-' 
-' This program is free software: you can redistribute it and/or modify
-' it under the terms of the GNU General Public License as published by
-' the Free Software Foundation, either version 3 of the License, or
-' (at your option) any later version.
-' 
-' This program is distributed in the hope that it will be useful,
-' but WITHOUT ANY WARRANTY; without even the implied warranty of
-' MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-' GNU General Public License for more details.
-' 
-' You should have received a copy of the GNU General Public License
-' along with this program. If not, see <http://www.gnu.org/licenses/>.
+    ' Author:
+    ' 
+    '       asuka (amethyst.asuka@gcmodeller.org)
+    '       xie (genetics@smrucc.org)
+    '       xieguigang (xie.guigang@live.com)
+    ' 
+    ' Copyright (c) 2018 GPL3 Licensed
+    ' 
+    ' 
+    ' GNU GENERAL PUBLIC LICENSE (GPL3)
+    ' 
+    ' 
+    ' This program is free software: you can redistribute it and/or modify
+    ' it under the terms of the GNU General Public License as published by
+    ' the Free Software Foundation, either version 3 of the License, or
+    ' (at your option) any later version.
+    ' 
+    ' This program is distributed in the hope that it will be useful,
+    ' but WITHOUT ANY WARRANTY; without even the implied warranty of
+    ' MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    ' GNU General Public License for more details.
+    ' 
+    ' You should have received a copy of the GNU General Public License
+    ' along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 
 
-' /********************************************************************************/
+    ' /********************************************************************************/
 
-' Summaries:
+    ' Summaries:
 
-' Module CLI
-' 
-'     Function: CompileKEGG, CompileKEGGOrganism, ExportModelGraph, ExportPathwaysNetwork, IsGCMarkup
-'               loadRepliconTable, Summary
-' 
-' /********************************************************************************/
+    ' Module CLI
+    ' 
+    '     Function: CompileKEGG, CompileKEGGOrganism, ExportModelGraph, ExportPathwaysNetwork, IsGCMarkup
+    '               Summary
+    ' 
+    ' /********************************************************************************/
 
 #End Region
 
@@ -60,6 +60,7 @@ Imports SMRUCC.genomics.GCModeller.Assembly.GCMarkupLanguage.v2
 Imports SMRUCC.genomics.GCModeller.Compiler
 Imports SMRUCC.genomics.GCModeller.Compiler.MarkupCompiler
 Imports SMRUCC.genomics.GCModeller.ModellingEngine.Model
+Imports SMRUCC.genomics.GCModeller.Compiler.AssemblyScript
 
 Partial Module CLI
 
@@ -243,5 +244,21 @@ Partial Module CLI
         Next
 
         Return 0
+    End Function
+
+    <ExportAPI("/build")>
+    <Usage("/build /assembly <makeassembly.vhd> /tag <modeltagName:version>")>
+    Public Function build(args As CommandLine) As Integer
+        Dim assembly$ = args <= "/assembly"
+        Dim tag$ = args <= "/tag"
+
+        Using registry As New Registry
+            Return AssemblyScript.Compiler _
+                .Build(assembly, registry) _
+                .DoCall(Function(vcell)
+                            Return registry.Tag(vcell, tag)
+                        End Function) _
+                .CLICode
+        End Using
     End Function
 End Module

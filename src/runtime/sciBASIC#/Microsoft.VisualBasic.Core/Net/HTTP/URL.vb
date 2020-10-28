@@ -1,49 +1,50 @@
 ﻿#Region "Microsoft.VisualBasic::35583026f2d6070a7b91c461a292f95d, Microsoft.VisualBasic.Core\Net\HTTP\URL.vb"
 
-    ' Author:
-    ' 
-    '       asuka (amethyst.asuka@gcmodeller.org)
-    '       xie (genetics@smrucc.org)
-    '       xieguigang (xie.guigang@live.com)
-    ' 
-    ' Copyright (c) 2018 GPL3 Licensed
-    ' 
-    ' 
-    ' GNU GENERAL PUBLIC LICENSE (GPL3)
-    ' 
-    ' 
-    ' This program is free software: you can redistribute it and/or modify
-    ' it under the terms of the GNU General Public License as published by
-    ' the Free Software Foundation, either version 3 of the License, or
-    ' (at your option) any later version.
-    ' 
-    ' This program is distributed in the hope that it will be useful,
-    ' but WITHOUT ANY WARRANTY; without even the implied warranty of
-    ' MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    ' GNU General Public License for more details.
-    ' 
-    ' You should have received a copy of the GNU General Public License
-    ' along with this program. If not, see <http://www.gnu.org/licenses/>.
+' Author:
+' 
+'       asuka (amethyst.asuka@gcmodeller.org)
+'       xie (genetics@smrucc.org)
+'       xieguigang (xie.guigang@live.com)
+' 
+' Copyright (c) 2018 GPL3 Licensed
+' 
+' 
+' GNU GENERAL PUBLIC LICENSE (GPL3)
+' 
+' 
+' This program is free software: you can redistribute it and/or modify
+' it under the terms of the GNU General Public License as published by
+' the Free Software Foundation, either version 3 of the License, or
+' (at your option) any later version.
+' 
+' This program is distributed in the hope that it will be useful,
+' but WITHOUT ANY WARRANTY; without even the implied warranty of
+' MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+' GNU General Public License for more details.
+' 
+' You should have received a copy of the GNU General Public License
+' along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 
 
-    ' /********************************************************************************/
+' /********************************************************************************/
 
-    ' Summaries:
+' Summaries:
 
-    '     Class URL
-    ' 
-    '         Properties: hashcode, hostName, path, port, protocol
-    '                     query
-    ' 
-    '         Constructor: (+2 Overloads) Sub New
-    '         Function: BuildUrl, GetValues, ToString
-    ' 
-    ' 
-    ' /********************************************************************************/
+'     Class URL
+' 
+'         Properties: hashcode, hostName, path, port, protocol
+'                     query
+' 
+'         Constructor: (+2 Overloads) Sub New
+'         Function: BuildUrl, GetValues, ToString
+' 
+' 
+' /********************************************************************************/
 
 #End Region
 
+Imports Microsoft.VisualBasic.ComponentModel.Collection
 Imports Microsoft.VisualBasic.ComponentModel.DataSourceModel
 Imports Microsoft.VisualBasic.Language
 Imports Microsoft.VisualBasic.Linq
@@ -113,32 +114,31 @@ Namespace Net.Http
                 hostName = "localhost"
                 path = url.Trim("/"c)
             Else
-                url = url.Substring(protocol.Length + 1)
+                url = url.Substring(protocol.Length)
 
                 With url.GetTagValue("/", trim:=False, failureNoName:=False)
                     hostName = .Name
                     path = .Value
 
-                    With hostName.GetTagValue(":", False, True)
-                        hostName = .Name
+                    Dim tokens = hostName.GetTagValue(":", False, False)
+                    hostName = tokens.Name
 
-                        If .Value = "" Then
-                            Select Case protocol
-                                Case "http://"
-                                    port = 80
-                                Case "https://"
-                                    port = 443
-                                Case "ftp://"
-                                    port = 21
-                                Case "sftp://"
-                                    port = 22
-                                Case Else
-                                    port = -1
-                            End Select
-                        Else
-                            port = Integer.Parse(.Value)
-                        End If
-                    End With
+                    If tokens.Value.StringEmpty Then
+                        Select Case protocol
+                            Case "http://"
+                                port = 80
+                            Case "https://"
+                                port = 443
+                            Case "ftp://"
+                                port = 21
+                            Case "sftp://"
+                                port = 22
+                            Case Else
+                                port = -1
+                        End Select
+                    Else
+                        port = Integer.Parse(tokens.Value)
+                    End If
                 End With
             End If
         End Sub

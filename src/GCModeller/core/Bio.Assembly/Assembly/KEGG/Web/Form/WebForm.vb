@@ -1,4 +1,4 @@
-﻿#Region "Microsoft.VisualBasic::0fb1c7671286317e221c47c0b5e0c807, Bio.Assembly\Assembly\KEGG\Web\Form\WebForm.vb"
+﻿#Region "Microsoft.VisualBasic::0fb1c7671286317e221c47c0b5e0c807, core\Bio.Assembly\Assembly\KEGG\Web\Form\WebForm.vb"
 
     ' Author:
     ' 
@@ -53,6 +53,7 @@ Option Strict Off
 
 Imports System.Text
 Imports System.Text.RegularExpressions
+Imports Microsoft.VisualBasic.ComponentModel.Collection
 Imports Microsoft.VisualBasic.ComponentModel.DataSourceModel
 Imports Microsoft.VisualBasic.Language
 Imports Microsoft.VisualBasic.Linq.Extensions

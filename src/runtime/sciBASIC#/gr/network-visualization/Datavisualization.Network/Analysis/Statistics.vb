@@ -1,42 +1,43 @@
-﻿#Region "Microsoft.VisualBasic::6dbec0a39dbbef0f7670a89ba3bce68a, gr\network-visualization\Datavisualization.Network\Analysis\Statistics.vb"
+﻿#Region "Microsoft.VisualBasic::50e9a2b8de0ad0b89e34ee915641f9d9, gr\network-visualization\Datavisualization.Network\Analysis\Statistics.vb"
 
-' Author:
-' 
-'       asuka (amethyst.asuka@gcmodeller.org)
-'       xie (genetics@smrucc.org)
-'       xieguigang (xie.guigang@live.com)
-' 
-' Copyright (c) 2018 GPL3 Licensed
-' 
-' 
-' GNU GENERAL PUBLIC LICENSE (GPL3)
-' 
-' 
-' This program is free software: you can redistribute it and/or modify
-' it under the terms of the GNU General Public License as published by
-' the Free Software Foundation, either version 3 of the License, or
-' (at your option) any later version.
-' 
-' This program is distributed in the hope that it will be useful,
-' but WITHOUT ANY WARRANTY; without even the implied warranty of
-' MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-' GNU General Public License for more details.
-' 
-' You should have received a copy of the GNU General Public License
-' along with this program. If not, see <http://www.gnu.org/licenses/>.
+    ' Author:
+    ' 
+    '       asuka (amethyst.asuka@gcmodeller.org)
+    '       xie (genetics@smrucc.org)
+    '       xieguigang (xie.guigang@live.com)
+    ' 
+    ' Copyright (c) 2018 GPL3 Licensed
+    ' 
+    ' 
+    ' GNU GENERAL PUBLIC LICENSE (GPL3)
+    ' 
+    ' 
+    ' This program is free software: you can redistribute it and/or modify
+    ' it under the terms of the GNU General Public License as published by
+    ' the Free Software Foundation, either version 3 of the License, or
+    ' (at your option) any later version.
+    ' 
+    ' This program is distributed in the hope that it will be useful,
+    ' but WITHOUT ANY WARRANTY; without even the implied warranty of
+    ' MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    ' GNU General Public License for more details.
+    ' 
+    ' You should have received a copy of the GNU General Public License
+    ' along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 
 
-' /********************************************************************************/
+    ' /********************************************************************************/
 
-' Summaries:
+    ' Summaries:
 
-'     Module Statistics
-' 
-'         Function: BetweennessCentrality, ComputeBetweennessCentrality, ComputeDegreeData, ComputeNodeDegrees, Sum
-' 
-' 
-' /********************************************************************************/
+    '     Module Statistics
+    ' 
+    '         Function: BetweennessCentrality, ComputeBetweennessCentrality, ComputeDegreeData, ComputeNodeDegrees, ConnectedDegrees
+    '                   Sum
+    ' 
+    ' 
+    ' /********************************************************************************/
 
 #End Region
 
@@ -48,6 +49,7 @@ Imports Microsoft.VisualBasic.Data.visualize.Network.Graph.Abstract
 Imports Microsoft.VisualBasic.Linq
 Imports GraphNetwork = Microsoft.VisualBasic.Data.GraphTheory.Network
 Imports names = Microsoft.VisualBasic.Data.visualize.Network.FileStream.Generic.NamesOf
+Imports Node = Microsoft.VisualBasic.Data.visualize.Network.Graph.Node
 
 Namespace Analysis
 
@@ -63,7 +65,7 @@ Namespace Analysis
         Public Function Sum(degrees As ([in] As Dictionary(Of String, Integer), out As Dictionary(Of String, Integer))) As Dictionary(Of String, Integer)
             Dim degreeValue As New Dictionary(Of String, Integer)(degrees.in)
 
-            For Each node In degrees.out
+            For Each node As KeyValuePair(Of String, Integer) In degrees.out
                 degreeValue(node.Key) += degreeValue(node.Key) + node.Value
             Next
 
@@ -82,8 +84,10 @@ Namespace Analysis
         ''' <returns></returns>
         <Extension>
         Public Function ComputeBetweennessCentrality(ByRef graph As NetworkGraph) As Dictionary(Of String, Integer)
-            Dim data = graph.BetweennessCentrality
-            Dim sumAll As Double = data.Values.Sum
+            Dim data As Dictionary(Of String, Integer) = graph.BetweennessCentrality
+            ' convert to double for avoid the integer upbound overflow
+            ' when deal with the network graph in ultra large size
+            Dim sumAll As Double = data.Values.Select(Function(i) CDbl(i)).Sum
 
             For Each node As Graph.Node In graph.vertex
                 node.data.betweennessCentrality = data(node.label)
@@ -96,8 +100,7 @@ Namespace Analysis
 
         <Extension>
         Public Function ConnectedDegrees(g As NetworkGraph) As Dictionary(Of String, Integer)
-            Return g _
-                .graphEdges _
+            Return g.graphEdges _
                 .Select(Function(link) {link.U.label, link.V.label}) _
                 .IteratesALL _
                 .GroupBy(Function(id) id) _
@@ -111,7 +114,9 @@ Namespace Analysis
         ''' 这个函数计算网络的节点的degree，然后将degree数据写入节点的同时，通过字典返回给用户
         ''' </summary>
         ''' <param name="g"></param>
-        ''' <returns></returns>
+        ''' <returns>
+        ''' ``[<see cref="Node.label"/> => degree]``
+        ''' </returns>
         <Extension>
         Public Function ComputeNodeDegrees(ByRef g As NetworkGraph) As Dictionary(Of String, Integer)
             Dim connectNodes As Dictionary(Of String, Integer) = g.ConnectedDegrees

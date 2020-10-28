@@ -1,4 +1,4 @@
-﻿#Region "Microsoft.VisualBasic::75f8aec9f62f32a0f97d6a79b59a71d0, analysis\SequenceToolkit\MotifScanner\Consensus\ConsensusScanner.vb"
+﻿#Region "Microsoft.VisualBasic::ad5802a4fb85a47ca68a64d822f33109, analysis\SequenceToolkit\MotifScanner\Consensus\ConsensusScanner.vb"
 
     ' Author:
     ' 
@@ -45,6 +45,7 @@
 
 Imports System.Runtime.CompilerServices
 Imports System.Text
+Imports Microsoft.VisualBasic.ComponentModel.Collection
 Imports Microsoft.VisualBasic.ComponentModel.DataSourceModel
 Imports Microsoft.VisualBasic.Linq
 Imports SMRUCC.genomics.ContextModel.Promoter

@@ -560,6 +560,7 @@
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Core" />
@@ -659,7 +660,10 @@
     <Compile Include="RandomForests\RandomForests.vb" />
     <Compile Include="RandomForests\NamespaceDoc.vb" />
     <Compile Include="RandomForests\StorageProcedure\MatrixLoader.vb" />
-    <Compile Include="SVM\Cache.vb" />
+    <Compile Include="SVM\Cache\Cache.vb" />
+    <Compile Include="SVM\Cache\head_t.vb" />
+    <Compile Include="SVM\Logging.vb" />
+    <Compile Include="SVM\SVMPrediction.vb" />
     <Compile Include="SVM\StorageProcedure\Models\SvmModelJSON.vb" />
     <Compile Include="SVM\StorageProcedure\Models\Model.vb" />
     <Compile Include="SVM\StorageProcedure\Models\ProblemTable.vb" />

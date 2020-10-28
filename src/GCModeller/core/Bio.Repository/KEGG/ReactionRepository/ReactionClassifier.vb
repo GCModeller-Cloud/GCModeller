@@ -1,4 +1,4 @@
-﻿#Region "Microsoft.VisualBasic::2fec6cde767700c62083eb0c0fa864ba, Bio.Repository\KEGG\ReactionRepository\ReactionClassifier.vb"
+﻿#Region "Microsoft.VisualBasic::2fec6cde767700c62083eb0c0fa864ba, core\Bio.Repository\KEGG\ReactionRepository\ReactionClassifier.vb"
 
     ' Author:
     ' 
@@ -43,6 +43,7 @@
 #End Region
 
 Imports System.Runtime.CompilerServices
+Imports Microsoft.VisualBasic.ComponentModel.Collection
 Imports Microsoft.VisualBasic.Linq
 Imports SMRUCC.genomics.Assembly.KEGG.DBGET.bGetObject
 
@@ -144,6 +145,11 @@ Public Class ReactionClassifier
         Return Me
     End Function
 
+    ''' <summary>
+    ''' A shortcut method based on the <see cref="ReactionClass.ScanRepository"/>
+    ''' </summary>
+    ''' <param name="directory"></param>
+    ''' <returns></returns>
     <MethodImpl(MethodImplOptions.AggressiveInlining)>
     Public Shared Function FromRepository(directory As String) As ReactionClassifier
         Return New ReactionClassifier With {

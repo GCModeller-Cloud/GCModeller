@@ -1,4 +1,4 @@
-﻿#Region "Microsoft.VisualBasic::e148d196143a6b4cfc56da68f818d0a1, IO\Raw\vcXML\Reader.vb"
+﻿#Region "Microsoft.VisualBasic::e148d196143a6b4cfc56da68f818d0a1, engine\IO\Raw\vcXML\Reader.vb"
 
     ' Author:
     ' 
@@ -47,6 +47,7 @@
 #End Region
 
 Imports System.IO
+Imports Microsoft.VisualBasic.ComponentModel.Collection
 Imports Microsoft.VisualBasic.Data.IO
 Imports Microsoft.VisualBasic.Language
 Imports Microsoft.VisualBasic.Linq

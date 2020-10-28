@@ -1,4 +1,4 @@
-﻿#Region "Microsoft.VisualBasic::dc1a3a1bea482429f2645740ddb320fd, Bio.Assembly\SequenceModel\NucleicAcid\Extensions.vb"
+﻿#Region "Microsoft.VisualBasic::dc1a3a1bea482429f2645740ddb320fd, core\Bio.Assembly\SequenceModel\NucleicAcid\Extensions.vb"
 
     ' Author:
     ' 
@@ -45,6 +45,7 @@
 
 Imports System.Runtime.CompilerServices
 Imports Microsoft.VisualBasic.CommandLine.Reflection
+Imports Microsoft.VisualBasic.ComponentModel.Collection
 Imports Microsoft.VisualBasic.Scripting.MetaData
 Imports stdNum = System.Math
 

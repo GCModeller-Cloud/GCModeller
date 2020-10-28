@@ -1,46 +1,46 @@
-﻿#Region "Microsoft.VisualBasic::42a2de2b1d63abfbe0dcb78ac5156519, KEGG\ReactionNetwork\Builder\BuilderBase.vb"
+﻿#Region "Microsoft.VisualBasic::dec1199963bb167e71a8464fbc740495, models\Networks\KEGG\ReactionNetwork\Builder\BuilderBase.vb"
 
-' Author:
-' 
-'       asuka (amethyst.asuka@gcmodeller.org)
-'       xie (genetics@smrucc.org)
-'       xieguigang (xie.guigang@live.com)
-' 
-' Copyright (c) 2018 GPL3 Licensed
-' 
-' 
-' GNU GENERAL PUBLIC LICENSE (GPL3)
-' 
-' 
-' This program is free software: you can redistribute it and/or modify
-' it under the terms of the GNU General Public License as published by
-' the Free Software Foundation, either version 3 of the License, or
-' (at your option) any later version.
-' 
-' This program is distributed in the hope that it will be useful,
-' but WITHOUT ANY WARRANTY; without even the implied warranty of
-' MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-' GNU General Public License for more details.
-' 
-' You should have received a copy of the GNU General Public License
-' along with this program. If not, see <http://www.gnu.org/licenses/>.
+    ' Author:
+    ' 
+    '       asuka (amethyst.asuka@gcmodeller.org)
+    '       xie (genetics@smrucc.org)
+    '       xieguigang (xie.guigang@live.com)
+    ' 
+    ' Copyright (c) 2018 GPL3 Licensed
+    ' 
+    ' 
+    ' GNU GENERAL PUBLIC LICENSE (GPL3)
+    ' 
+    ' 
+    ' This program is free software: you can redistribute it and/or modify
+    ' it under the terms of the GNU General Public License as published by
+    ' the Free Software Foundation, either version 3 of the License, or
+    ' (at your option) any later version.
+    ' 
+    ' This program is distributed in the hope that it will be useful,
+    ' but WITHOUT ANY WARRANTY; without even the implied warranty of
+    ' MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    ' GNU General Public License for more details.
+    ' 
+    ' You should have received a copy of the GNU General Public License
+    ' along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 
 
-' /********************************************************************************/
+    ' /********************************************************************************/
 
-' Summaries:
+    ' Summaries:
 
-'     Class BuilderBase
-' 
-'         Constructor: (+1 Overloads) Sub New
-' 
-'         Function: BuildModel, doNetworkExpansion
-' 
-'         Sub: addNewEdge
-' 
-' 
-' /********************************************************************************/
+    '     Class BuilderBase
+    ' 
+    '         Constructor: (+1 Overloads) Sub New
+    ' 
+    '         Function: BuildModel, doNetworkExpansion
+    ' 
+    '         Sub: addNewEdge
+    ' 
+    ' 
+    ' /********************************************************************************/
 
 #End Region
 
@@ -85,6 +85,8 @@ Namespace ReactionNetwork
         Protected edges As New Dictionary(Of String, Edge)
         Protected reactionIDlist As New List(Of String)
 
+        Protected ReadOnly strictFilter As EdgeFilter
+
         ''' <summary>
         ''' 
         ''' </summary>
@@ -93,7 +95,8 @@ Namespace ReactionNetwork
         Protected Sub New(br08901 As IEnumerable(Of ReactionTable),
                           compounds As IEnumerable(Of NamedValue(Of String)),
                           color As Brush,
-                          ignoresCommonList As Boolean)
+                          ignoresCommonList As Boolean,
+                          filterEngine As EdgeFilterEngine)
 
             ' 构建网络的基础数据
             ' 是依据KEGG代谢反应信息来定义的
@@ -128,6 +131,12 @@ Namespace ReactionNetwork
             End If
 
             nodes = New CompoundNodeTable(compounds, cpdGroups, commonIgnores, g, color:=color)
+            strictFilter = EdgeFilter.CreateFilter(
+                nodes:=nodes,
+                networkBase:=networkBase,
+                commonIgnores:=commonIgnores,
+                engine:=filterEngine
+            )
         End Sub
 
         ''' <summary>
@@ -167,7 +176,8 @@ Namespace ReactionNetwork
         ''' <returns></returns>
         Public Function BuildModel(Optional extended As Boolean = False,
                                    Optional enzymeInfo As Dictionary(Of String, String()) = Nothing,
-                                   Optional enzymeRelated As Boolean = True) As NetworkGraph
+                                   Optional enzymeRelated As Boolean = True,
+                                   Optional strictReactionNetwork As Boolean = False) As NetworkGraph
 
             Dim commons As Value(Of String()) = {}
             Dim extendes As New List(Of Node)
@@ -198,33 +208,44 @@ Namespace ReactionNetwork
 
                     ' a 和 b 是直接相连的
                     If Not (commons = reactionA.Intersect(rB).ToArray).IsNullOrEmpty Then
-                        Call reactionIDlist.AddRange(commons.Value)
-                        Call createEdges(commons, a, b)
-                    Else
+                        If strictReactionNetwork Then
+                            commons = strictFilter.filter(commons).ToArray
+                        End If
 
-                        ' 这两个节点之间可能存在一个空位，
-                        ' 对所有的节点进行遍历，找出同时链接a和b的节点
-                        If extended Then
-
-                            If Not cpdGroups.ContainsKey(a.label) OrElse Not cpdGroups.ContainsKey(b.label) Then
-                                Continue For
-                            Else
-                                extendes += cpdGroups.doNetworkExtension(
-                                    a:=a,
-                                    b:=b,
-                                    gray:=gray,
-                                    addEdge:=AddressOf addNewEdge,
-                                    nodes:=nodes,
-                                    reactionIDlist:=reactionIDlist
-                                )
+                        If commons.Value.IsNullOrEmpty Then
+                            If extended Then
+                                Call extendes.AddRange(doExpansion(a, b))
                             End If
-
+                        Else
+                            Call reactionIDlist.AddRange(commons.Value)
+                            Call createEdges(commons, a, b)
+                        End If
+                    Else
+                        If extended Then
+                            Call extendes.AddRange(doExpansion(a, b))
                         End If
                     End If
                 Next
             Next
 
             Return doNetworkExpansion(extendes, enzymeInfo, enzymeRelated)
+        End Function
+
+        Private Function doExpansion(a As Node, b As Node) As IEnumerable(Of Node)
+            ' 这两个节点之间可能存在一个空位，
+            ' 对所有的节点进行遍历，找出同时链接a和b的节点
+            If Not cpdGroups.ContainsKey(a.label) OrElse Not cpdGroups.ContainsKey(b.label) Then
+                Return {}
+            Else
+                Return cpdGroups.doNetworkExtension(
+                    a:=a,
+                    b:=b,
+                    gray:=gray,
+                    addEdge:=AddressOf addNewEdge,
+                    nodes:=nodes,
+                    reactionIDlist:=reactionIDlist
+                )
+            End If
         End Function
 
         Private Function doNetworkExpansion(extends As List(Of Node), enzymeInfo As Dictionary(Of String, String()), enzymeRelated As Boolean) As NetworkGraph
@@ -246,7 +267,13 @@ Namespace ReactionNetwork
 
             Call reactionIDlist _
                 .Distinct _
-                .doAppendReactionEnzyme(enzymeInfo, networkBase, nodes, AddressOf addNewEdge, enzymeRelated)
+                .doAppendReactionEnzyme(
+                    enzymeInfo:=enzymeInfo,
+                    networkBase:=networkBase,
+                    nodes:=nodes,
+                    addNewEdge:=AddressOf addNewEdge,
+                    enzymeRelated:=enzymeRelated
+                )
 
             Return g
         End Function

@@ -1,4 +1,4 @@
-﻿#Region "Microsoft.VisualBasic::ff71b9acf3d3996e8050a55b54a67e60, Data_science\MachineLearning\MachineLearning\SVM\Solver\Solver_NU.vb"
+﻿#Region "Microsoft.VisualBasic::fe00979ab7a42ae35dcfb89f0b7fe35d, Data_science\MachineLearning\MachineLearning\SVM\Solver\Solver_NU.vb"
 
     ' Author:
     ' 
@@ -45,11 +45,11 @@
 Imports stdNum = System.Math
 
 Namespace SVM
-    '
-    ' Solver for nu-svm classification and regression
-    '
-    ' additional constraint: e^T \alpha = constant
-    '
+
+    ''' <summary>
+    ''' Solver for nu-svm classification and regression
+    ''' additional constraint: e^T \alpha = constant
+    ''' </summary>
     Friend NotInheritable Class Solver_NU
         Inherits Solver
 

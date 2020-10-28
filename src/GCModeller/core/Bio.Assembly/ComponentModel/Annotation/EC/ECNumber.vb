@@ -1,4 +1,4 @@
-﻿#Region "Microsoft.VisualBasic::03cbced94aea4ca926207f299607c7da, Bio.Assembly\ComponentModel\Annotation\EC\ECNumber.vb"
+﻿#Region "Microsoft.VisualBasic::03cbced94aea4ca926207f299607c7da, core\Bio.Assembly\ComponentModel\Annotation\EC\ECNumber.vb"
 
     ' Author:
     ' 
@@ -45,6 +45,7 @@
 Imports System.Runtime.CompilerServices
 Imports System.Text.RegularExpressions
 Imports System.Xml.Serialization
+Imports Microsoft.VisualBasic.ComponentModel.Collection
 Imports Microsoft.VisualBasic.Linq
 
 Namespace ComponentModel.Annotation

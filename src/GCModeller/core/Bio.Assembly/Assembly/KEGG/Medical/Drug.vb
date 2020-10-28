@@ -1,4 +1,4 @@
-﻿#Region "Microsoft.VisualBasic::b4d9e07ed518fb2454446165212ad143, Bio.Assembly\Assembly\KEGG\Medical\Drug.vb"
+﻿#Region "Microsoft.VisualBasic::b4d9e07ed518fb2454446165212ad143, core\Bio.Assembly\Assembly\KEGG\Medical\Drug.vb"
 
     ' Author:
     ' 
@@ -70,6 +70,7 @@
 #End Region
 
 Imports Microsoft.VisualBasic.ComponentModel
+Imports Microsoft.VisualBasic.ComponentModel.Collection
 Imports Microsoft.VisualBasic.ComponentModel.Collection.Generic
 Imports Microsoft.VisualBasic.ComponentModel.DataSourceModel
 Imports Microsoft.VisualBasic.Serialization.JSON

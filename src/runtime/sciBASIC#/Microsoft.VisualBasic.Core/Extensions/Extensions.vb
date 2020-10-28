@@ -1,59 +1,59 @@
 ﻿#Region "Microsoft.VisualBasic::e1d014d33fc1fd07d67e168da4678ca4, Microsoft.VisualBasic.Core\Extensions\Extensions.vb"
 
-    ' Author:
-    ' 
-    '       asuka (amethyst.asuka@gcmodeller.org)
-    '       xie (genetics@smrucc.org)
-    '       xieguigang (xie.guigang@live.com)
-    ' 
-    ' Copyright (c) 2018 GPL3 Licensed
-    ' 
-    ' 
-    ' GNU GENERAL PUBLIC LICENSE (GPL3)
-    ' 
-    ' 
-    ' This program is free software: you can redistribute it and/or modify
-    ' it under the terms of the GNU General Public License as published by
-    ' the Free Software Foundation, either version 3 of the License, or
-    ' (at your option) any later version.
-    ' 
-    ' This program is distributed in the hope that it will be useful,
-    ' but WITHOUT ANY WARRANTY; without even the implied warranty of
-    ' MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    ' GNU General Public License for more details.
-    ' 
-    ' You should have received a copy of the GNU General Public License
-    ' along with this program. If not, see <http://www.gnu.org/licenses/>.
+' Author:
+' 
+'       asuka (amethyst.asuka@gcmodeller.org)
+'       xie (genetics@smrucc.org)
+'       xieguigang (xie.guigang@live.com)
+' 
+' Copyright (c) 2018 GPL3 Licensed
+' 
+' 
+' GNU GENERAL PUBLIC LICENSE (GPL3)
+' 
+' 
+' This program is free software: you can redistribute it and/or modify
+' it under the terms of the GNU General Public License as published by
+' the Free Software Foundation, either version 3 of the License, or
+' (at your option) any later version.
+' 
+' This program is distributed in the hope that it will be useful,
+' but WITHOUT ANY WARRANTY; without even the implied warranty of
+' MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+' GNU General Public License for more details.
+' 
+' You should have received a copy of the GNU General Public License
+' along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 
 
-    ' /********************************************************************************/
+' /********************************************************************************/
 
-    ' Summaries:
+' Summaries:
 
-    ' Module Extensions
-    ' 
-    ' 
-    ' Module Extensions
-    ' 
-    '     Function: [Set], Add, (+3 Overloads) AddRange, AsRange, (+2 Overloads) Average
-    '               CheckDuplicated, Constrain, DateToString, DriverRun, FormatTime
-    '               FuzzyMatching, IndexOf, InsertOrUpdate, Invoke, InvokeSet
-    '               Is_NA_UHandle, (+2 Overloads) IsNaNImaginary, (+2 Overloads) JoinBy, Keys, (+2 Overloads) LongSeq
-    '               MatrixToUltraLargeVector, MatrixTranspose, MatrixTransposeIgnoredDimensionAgreement, MD5, ModifyValue
-    '               (+2 Overloads) Offset, Range, Remove, RemoveDuplicates, RemoveFirst
-    '               (+2 Overloads) RemoveLast, RunDriver, Second, SelectFile, SeqRandom
-    '               (+3 Overloads) Sequence, (+2 Overloads) SetValue, (+11 Overloads) ShadowCopy, Shell, Shuffles
-    '               Slice, (+2 Overloads) SplitMV, StdError, ToArray, ToBoolean
-    '               ToDictionary, ToNormalizedPathString, ToString, ToStringArray, ToVector
-    '               (+3 Overloads) TrimNull, TryCount, Unlist, WriteAddress
-    ' 
-    '     Sub: Add, FillBlank, Removes, Swap, SwapItem
-    '          SwapWith
-    ' 
-    ' 
-    ' 
-    ' /********************************************************************************/
+' Module Extensions
+' 
+' 
+' Module Extensions
+' 
+'     Function: [Set], Add, (+3 Overloads) AddRange, AsRange, (+2 Overloads) Average
+'               CheckDuplicated, Constrain, DateToString, DriverRun, FormatTime
+'               FuzzyMatching, IndexOf, InsertOrUpdate, Invoke, InvokeSet
+'               Is_NA_UHandle, (+2 Overloads) IsNaNImaginary, (+2 Overloads) JoinBy, Keys, (+2 Overloads) LongSeq
+'               MatrixToUltraLargeVector, MatrixTranspose, MatrixTransposeIgnoredDimensionAgreement, MD5, ModifyValue
+'               (+2 Overloads) Offset, Range, Remove, RemoveDuplicates, RemoveFirst
+'               (+2 Overloads) RemoveLast, RunDriver, Second, SelectFile, SeqRandom
+'               (+3 Overloads) Sequence, (+2 Overloads) SetValue, (+11 Overloads) ShadowCopy, Shell, Shuffles
+'               Slice, (+2 Overloads) SplitMV, StdError, ToArray, ToBoolean
+'               ToDictionary, ToNormalizedPathString, ToString, ToStringArray, ToVector
+'               (+3 Overloads) TrimNull, TryCount, Unlist, WriteAddress
+' 
+'     Sub: Add, FillBlank, Removes, Swap, SwapItem
+'          SwapWith
+' 
+' 
+' 
+' /********************************************************************************/
 
 #End Region
 
@@ -83,6 +83,7 @@ Imports Microsoft.VisualBasic.Serialization.JSON
 #End If
 Imports Microsoft.VisualBasic.ApplicationServices.Terminal
 Imports Microsoft.VisualBasic.Text.Similarity
+Imports Microsoft.VisualBasic.CommandLine.Parsers
 
 #Const FRAMEWORD_CORE = 1
 #Const Yes = 1
@@ -152,20 +153,6 @@ Public Module Extensions
         Return parts
     End Function
 
-    ''' <summary>
-    ''' ``days, hh:mm:ss.ms``
-    ''' </summary>
-    ''' <param name="t"></param>
-    ''' <returns></returns>
-    ''' 
-    <MethodImpl(MethodImplOptions.AggressiveInlining)>
-    <Extension>
-    Public Function FormatTime(t As TimeSpan) As String
-        With t
-            Return $"{ZeroFill(.Days, 2)}, {ZeroFill(.Hours, 2)}:{ZeroFill(.Minutes, 2)}:{ZeroFill(.Seconds, 2)}.{ ZeroFill(.Milliseconds, 3)}"
-        End With
-    End Function
-
     <Extension>
     Public Function Average(data As IEnumerable(Of TimeSpan)) As TimeSpan
         Dim avg# = data.Select(Function(x) x.TotalMilliseconds).Average
@@ -225,19 +212,6 @@ Public Module Extensions
         Else
             Return source.AsList.IndexOf(x)
         End If
-    End Function
-
-    ''' <summary>
-    ''' Gets all keys value from the target <see cref="KeyValuePair"/> collection.
-    ''' </summary>
-    ''' <typeparam name="T1"></typeparam>
-    ''' <typeparam name="T2"></typeparam>
-    ''' <param name="source"></param>
-    ''' <returns></returns>
-    ''' 
-    <MethodImpl(MethodImplOptions.AggressiveInlining)>
-    <Extension> Public Function Keys(Of T1, T2)(source As IEnumerable(Of KeyValuePair(Of T1, T2))) As T1()
-        Return source.Select(Function(x) x.Key).ToArray
     End Function
 
     ''' <summary>
@@ -979,11 +953,6 @@ Public Module Extensions
     End Function
 
     ''' <summary>
-    ''' The first element in a collection.
-    ''' </summary>
-    Public Const Scan0 As Integer = 0
-
-    ''' <summary>
     ''' 函数只返回有重复的数据
     ''' </summary>
     ''' <typeparam name="T"></typeparam>
@@ -1124,7 +1093,17 @@ Public Module Extensions
         Return LQuery
     End Function
 
-    <Extension> Public Sub Swap(Of T)(ByRef array As T(), a%, b%)
+    ''' <summary>
+    ''' swap two element in the array
+    ''' </summary>
+    ''' <typeparam name="T"></typeparam>
+    ''' <param name="array"></param>
+    ''' <param name="a%"></param>
+    ''' <param name="b%"></param>
+    ''' 
+    <MethodImpl(MethodImplOptions.AggressiveInlining)>
+    <Extension>
+    Public Sub Swap(Of T)(ByRef array As T(), a%, b%)
         Dim tmp As T = array(a)
         array(a) = array(b)
         array(b) = tmp
@@ -1137,10 +1116,13 @@ Public Module Extensions
     ''' <param name="obj1"></param>
     ''' <param name="obj2"></param>
     ''' <remarks></remarks>
-    <Extension> Public Sub SwapWith(Of T)(ByRef obj1 As T, ByRef obj2 As T)
-        Dim objTemp As T = obj1
+    ''' 
+    <MethodImpl(MethodImplOptions.AggressiveInlining)>
+    <Extension>
+    Public Sub Swap(Of T)(ByRef obj1 As T, ByRef obj2 As T)
+        Dim temp As T = obj1
         obj1 = obj2
-        obj2 = objTemp
+        obj2 = temp
     End Sub
 
     ''' <summary>

@@ -1,4 +1,4 @@
-﻿#Region "Microsoft.VisualBasic::fe421e3244f5dc47b02ad104d3d0dd6d, Bio.Assembly\ComponentModel\Annotation\CatalogProfiles.vb"
+﻿#Region "Microsoft.VisualBasic::fe421e3244f5dc47b02ad104d3d0dd6d, core\Bio.Assembly\ComponentModel\Annotation\CatalogProfiles.vb"
 
     ' Author:
     ' 
@@ -49,6 +49,7 @@
 #End Region
 
 Imports System.Runtime.CompilerServices
+Imports Microsoft.VisualBasic.ComponentModel.Collection
 Imports Microsoft.VisualBasic.ComponentModel.DataSourceModel
 Imports Microsoft.VisualBasic.Linq
 Imports Microsoft.VisualBasic.Serialization.JSON

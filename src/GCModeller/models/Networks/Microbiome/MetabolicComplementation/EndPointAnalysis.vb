@@ -1,4 +1,4 @@
-﻿#Region "Microsoft.VisualBasic::38689d08d7d47307503f21218f35609b, Microbiome\MetabolicComplementation\EndPointAnalysis.vb"
+﻿#Region "Microsoft.VisualBasic::38689d08d7d47307503f21218f35609b, models\Networks\Microbiome\MetabolicComplementation\EndPointAnalysis.vb"
 
     ' Author:
     ' 
@@ -42,6 +42,7 @@
 #End Region
 
 Imports System.Runtime.CompilerServices
+Imports Microsoft.VisualBasic.ComponentModel.Collection
 Imports Microsoft.VisualBasic.Data.GraphTheory.Network.Extensions
 Imports Microsoft.VisualBasic.Data.visualize.Network
 Imports Microsoft.VisualBasic.Data.visualize.Network.Graph

@@ -1,4 +1,4 @@
-﻿#Region "Microsoft.VisualBasic::3ff6d184c649589eb9cb66be0234b0f7, Bio.Assembly\Assembly\KEGG\DBGET\Objects\KEGGOrganism\ShowOrganism.vb"
+﻿#Region "Microsoft.VisualBasic::3ff6d184c649589eb9cb66be0234b0f7, core\Bio.Assembly\Assembly\KEGG\DBGET\Objects\KEGGOrganism\ShowOrganism.vb"
 
     ' Author:
     ' 
@@ -42,6 +42,7 @@
 #End Region
 
 Imports System.Runtime.CompilerServices
+Imports Microsoft.VisualBasic.ComponentModel.Collection
 Imports Microsoft.VisualBasic.ComponentModel.DataSourceModel
 Imports Microsoft.VisualBasic.Linq
 Imports Microsoft.VisualBasic.Net.Http

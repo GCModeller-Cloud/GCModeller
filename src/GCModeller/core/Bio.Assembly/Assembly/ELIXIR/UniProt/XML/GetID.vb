@@ -1,4 +1,4 @@
-﻿#Region "Microsoft.VisualBasic::7a8ac2099c3312d20308576db69b2049, Bio.Assembly\Assembly\ELIXIR\UniProt\XML\GetID.vb"
+﻿#Region "Microsoft.VisualBasic::7a8ac2099c3312d20308576db69b2049, core\Bio.Assembly\Assembly\ELIXIR\UniProt\XML\GetID.vb"
 
     ' Author:
     ' 
@@ -52,6 +52,7 @@
 
 Imports System.Runtime.CompilerServices
 Imports Microsoft.VisualBasic.ComponentModel
+Imports Microsoft.VisualBasic.ComponentModel.Collection
 Imports Microsoft.VisualBasic.ComponentModel.Collection.Generic
 Imports Microsoft.VisualBasic.Linq
 

@@ -1,4 +1,4 @@
-﻿#Region "Microsoft.VisualBasic::16fbbe6b841fd103f52bcb5a5685dfd0, KEGG\ReactionNetwork\GetGeneSymbols.vb"
+﻿#Region "Microsoft.VisualBasic::16fbbe6b841fd103f52bcb5a5685dfd0, models\Networks\KEGG\ReactionNetwork\GetGeneSymbols.vb"
 
     ' Author:
     ' 
@@ -41,6 +41,7 @@
 #End Region
 
 Imports System.Runtime.CompilerServices
+Imports Microsoft.VisualBasic.ComponentModel.Collection
 Imports Microsoft.VisualBasic.Linq
 
 Namespace ReactionNetwork

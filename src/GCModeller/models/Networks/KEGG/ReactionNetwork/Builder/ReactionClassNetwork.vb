@@ -1,4 +1,4 @@
-﻿#Region "Microsoft.VisualBasic::c830e5c4070c9de19315919a8687e793, KEGG\ReactionNetwork\Builder\ReactionClassNetwork.vb"
+﻿#Region "Microsoft.VisualBasic::1cc3f71361ba42879899b1617c1489cb, models\Networks\KEGG\ReactionNetwork\Builder\ReactionClassNetwork.vb"
 
     ' Author:
     ' 
@@ -62,9 +62,10 @@ Namespace ReactionNetwork
         Sub New(br08901 As IEnumerable(Of ReactionTable),
                 compounds As IEnumerable(Of NamedValue(Of String)),
                 reactionClass As IEnumerable(Of ReactionClassTable),
-                Optional ignoresCommonList As Boolean = True)
+                Optional ignoresCommonList As Boolean = True,
+                Optional edgeFilter As EdgeFilterEngine = EdgeFilterEngine.ReactionLinkFilter)
 
-            Call MyBase.New(br08901, compounds, blue, ignoresCommonList)
+            Call MyBase.New(br08901, compounds, blue, ignoresCommonList, edgeFilter)
 
             classIndex = ReactionClassTable.IndexTable(reactionClass)
         End Sub

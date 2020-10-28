@@ -1,4 +1,4 @@
-﻿#Region "Microsoft.VisualBasic::d6a2e10aa66b4848e32523154395bb14, data\RegulonDatabase\Regprecise\WebServices\WebParser\WebAPI.vb"
+﻿#Region "Microsoft.VisualBasic::6c1627828e4a8911a281a07c19bc1add, data\RegulonDatabase\Regprecise\WebServices\WebParser\WebAPI.vb"
 
     ' Author:
     ' 
@@ -46,6 +46,7 @@ Imports System.Threading
 Imports Microsoft.VisualBasic.ApplicationServices.Debugging.Logging
 Imports Microsoft.VisualBasic.ApplicationServices.Terminal.ProgressBar
 Imports Microsoft.VisualBasic.CommandLine.Reflection
+Imports Microsoft.VisualBasic.ComponentModel.Collection
 Imports Microsoft.VisualBasic.Language
 Imports Microsoft.VisualBasic.Scripting.MetaData
 Imports Microsoft.VisualBasic.Serialization

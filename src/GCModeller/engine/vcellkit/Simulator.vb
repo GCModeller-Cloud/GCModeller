@@ -1,4 +1,4 @@
-﻿#Region "Microsoft.VisualBasic::3a3b611b4ab0acf640d9502afa52776f, vcellkit\Simulator.vb"
+﻿#Region "Microsoft.VisualBasic::f4b3d360480d27be316814d00d00774d, engine\vcellkit\Simulator.vb"
 
     ' Author:
     ' 
@@ -56,6 +56,7 @@ Imports System.Runtime.CompilerServices
 Imports Microsoft.VisualBasic.ApplicationServices.Development
 Imports Microsoft.VisualBasic.CommandLine
 Imports Microsoft.VisualBasic.CommandLine.Reflection
+Imports Microsoft.VisualBasic.ComponentModel.Collection
 Imports Microsoft.VisualBasic.Language.Default
 Imports Microsoft.VisualBasic.Linq
 Imports Microsoft.VisualBasic.Scripting.MetaData

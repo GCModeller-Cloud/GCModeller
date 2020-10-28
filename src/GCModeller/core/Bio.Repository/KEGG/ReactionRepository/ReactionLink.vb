@@ -1,4 +1,4 @@
-﻿#Region "Microsoft.VisualBasic::9f36deb259293f723a62fc240b82c618, Bio.Repository\KEGG\ReactionRepository\ReactionLink.vb"
+﻿#Region "Microsoft.VisualBasic::9f36deb259293f723a62fc240b82c618, core\Bio.Repository\KEGG\ReactionRepository\ReactionLink.vb"
 
     ' Author:
     ' 
@@ -43,6 +43,7 @@
 
 Imports System.Runtime.CompilerServices
 Imports Microsoft.VisualBasic.ComponentModel
+Imports Microsoft.VisualBasic.ComponentModel.Collection
 Imports Microsoft.VisualBasic.ComponentModel.DataSourceModel
 Imports Microsoft.VisualBasic.Language.UnixBash
 Imports Microsoft.VisualBasic.Linq

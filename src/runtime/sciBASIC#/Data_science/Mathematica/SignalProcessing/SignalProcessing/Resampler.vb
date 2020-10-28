@@ -1,4 +1,4 @@
-﻿#Region "Microsoft.VisualBasic::42483e4b7989de00005b7a6109fffbbc, Data_science\Mathematica\SignalProcessing\SignalProcessing\Resampler.vb"
+﻿#Region "Microsoft.VisualBasic::4e69c50fa36bf87b10d790d7efa0a564, Data_science\Mathematica\SignalProcessing\SignalProcessing\Resampler.vb"
 
     ' Author:
     ' 
@@ -48,13 +48,22 @@ Imports Microsoft.VisualBasic.Linq
 ''' </summary>
 Public Class Resampler
 
-    Dim raw As GeneralSignal
     Dim x As Double()
     Dim y As Double()
 
+    ''' <summary>
+    ''' populate the <see cref="GeneralSignal.Measures"/> of the raw signal
+    ''' </summary>
+    ''' <returns></returns>
     Public ReadOnly Property enumerateMeasures As Double()
         Get
             Return x.ToArray
+        End Get
+    End Property
+
+    Default Public ReadOnly Property GetVector(x As IEnumerable(Of Double)) As Double()
+        Get
+            Return x.Select(AddressOf GetIntensity).ToArray
         End Get
     End Property
 
@@ -87,6 +96,14 @@ Public Class Resampler
         Return Me.x.Length
     End Function
 
+    Public Shared Function CreateSampler(x As Double(), y As Double()) As Resampler
+        If x.Length <> y.Length Then
+            Throw New ArgumentException($"the size of x should equals to the size of y!")
+        End If
+
+        Return New Resampler With {.x = x, .y = y}
+    End Function
+
     Public Shared Function CreateSampler(raw As GeneralSignal) As Resampler
         Dim x = raw.Measures _
             .SeqIterator _
@@ -95,7 +112,6 @@ Public Class Resampler
         Dim y = raw.Strength
 
         Return New Resampler With {
-            .raw = raw,
             .x = x.Select(Function(xi) xi.value).ToArray,
             .y = x.Select(Function(xi) y(xi.i)).ToArray
         }

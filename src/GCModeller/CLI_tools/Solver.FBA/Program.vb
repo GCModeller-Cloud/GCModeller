@@ -1,4 +1,4 @@
-﻿#Region "Microsoft.VisualBasic::eec6d9277c48c52bc5d596693c3df61e, CLI_tools\Solver.FBA\Program.vb"
+﻿#Region "Microsoft.VisualBasic::9b2145eb864e6c514afbf4a615c5f7d0, CLI_tools\Solver.FBA\Program.vb"
 
 ' Author:
 ' 
@@ -41,6 +41,7 @@
 
 #End Region
 
+Imports Microsoft.VisualBasic.ComponentModel.Collection
 Imports Microsoft.VisualBasic.ComponentModel.Ranges.Model
 Imports Microsoft.VisualBasic.Extensions
 Imports RDotNET.Extensions.VisualBasic

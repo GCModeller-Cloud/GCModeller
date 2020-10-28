@@ -1,4 +1,4 @@
-﻿#Region "Microsoft.VisualBasic::a20c400345f713a48edcc33ea327861a, IO\Raw\vcXML\VcellAdapterDriver.vb"
+﻿#Region "Microsoft.VisualBasic::a20c400345f713a48edcc33ea327861a, engine\IO\Raw\vcXML\VcellAdapterDriver.vb"
 
     ' Author:
     ' 
@@ -44,6 +44,7 @@
 #End Region
 
 Imports System.Xml
+Imports Microsoft.VisualBasic.ComponentModel.Collection
 Imports Microsoft.VisualBasic.Linq
 Imports SMRUCC.genomics.GCModeller.ModellingEngine.Dynamics.Engine
 Imports SMRUCC.genomics.GCModeller.ModellingEngine.Dynamics.Engine.Definitions

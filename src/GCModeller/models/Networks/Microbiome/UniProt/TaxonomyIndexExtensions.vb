@@ -1,4 +1,4 @@
-﻿#Region "Microsoft.VisualBasic::017e4b934f287a9cdc544a7b9c8cfa88, Microbiome\UniProt\TaxonomyIndexExtensions.vb"
+﻿#Region "Microsoft.VisualBasic::017e4b934f287a9cdc544a7b9c8cfa88, models\Networks\Microbiome\UniProt\TaxonomyIndexExtensions.vb"
 
     ' Author:
     ' 
@@ -40,6 +40,7 @@
 #End Region
 
 Imports System.Runtime.CompilerServices
+Imports Microsoft.VisualBasic.ComponentModel.Collection
 Imports Microsoft.VisualBasic.Text.Xml.Models
 Imports SMRUCC.genomics.Analysis.Metagenome
 Imports SMRUCC.genomics.Assembly.KEGG.WebServices

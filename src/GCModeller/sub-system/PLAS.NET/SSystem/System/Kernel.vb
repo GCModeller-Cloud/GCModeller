@@ -1,4 +1,4 @@
-﻿#Region "Microsoft.VisualBasic::1495d99a05aa7bc9b840c00793135549, PLAS.NET\SSystem\System\Kernel.vb"
+﻿#Region "Microsoft.VisualBasic::1495d99a05aa7bc9b840c00793135549, sub-system\PLAS.NET\SSystem\System\Kernel.vb"
 
     ' Author:
     ' 
@@ -176,7 +176,7 @@ Namespace Kernel
                         Exit For
                     End If
 #If DEBUG Then
-                    Call __innerTicks(Me._RTime)
+                    Call [Step](RuntimeTicks)
 #Else
                     Try
                         Call [Step](RuntimeTicks)

@@ -1,4 +1,4 @@
-﻿#Region "Microsoft.VisualBasic::282578101b0c5d9b929276a8ddda4e4a, IO\GCMarkupLanguage\v2\ModelExtensions.vb"
+﻿#Region "Microsoft.VisualBasic::699c368de4c791f98580a38eae99f87e, engine\IO\GCMarkupLanguage\v2\ModelExtensions.vb"
 
     ' Author:
     ' 
@@ -41,6 +41,7 @@
 #End Region
 
 Imports System.Runtime.CompilerServices
+Imports Microsoft.VisualBasic.ComponentModel.Collection
 Imports Microsoft.VisualBasic.ComponentModel.DataSourceModel
 Imports Microsoft.VisualBasic.Language
 Imports Microsoft.VisualBasic.Linq
@@ -217,7 +218,7 @@ Namespace v2
                                             .formula = ScriptEngine.ParseExpression(k.Value.formula.lambda),
                                             .parameters = k.Value.formula.parameters,
                                             .paramVals = k.Value.parameter _
-                                                .Select(Function(a)
+                                                .Select(Function(a) As Object
                                                             If a.value.IsNaNImaginary Then
                                                                 Return a.target
                                                             Else

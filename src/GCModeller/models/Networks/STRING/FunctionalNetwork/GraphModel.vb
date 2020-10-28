@@ -1,4 +1,4 @@
-﻿#Region "Microsoft.VisualBasic::8b6d948da3c6bdb580fd6d4ffa32f1ec, STRING\FunctionalNetwork\GraphModel.vb"
+﻿#Region "Microsoft.VisualBasic::8b6d948da3c6bdb580fd6d4ffa32f1ec, models\Networks\STRING\FunctionalNetwork\GraphModel.vb"
 
     ' Author:
     ' 
@@ -40,6 +40,7 @@
 #End Region
 
 Imports System.Runtime.CompilerServices
+Imports Microsoft.VisualBasic.ComponentModel.Collection
 Imports Microsoft.VisualBasic.Data.visualize.Network
 Imports Microsoft.VisualBasic.Data.visualize.Network.Analysis
 Imports Microsoft.VisualBasic.Data.visualize.Network.FileStream

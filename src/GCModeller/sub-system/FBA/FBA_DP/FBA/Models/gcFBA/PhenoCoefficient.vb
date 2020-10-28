@@ -1,4 +1,4 @@
-﻿#Region "Microsoft.VisualBasic::924106832369f484ac5fe729417ace4d, FBA\FBA_DP\FBA\Models\gcFBA\PhenoCoefficient.vb"
+﻿#Region "Microsoft.VisualBasic::924106832369f484ac5fe729417ace4d, sub-system\FBA\FBA_DP\FBA\Models\gcFBA\PhenoCoefficient.vb"
 
     ' Author:
     ' 
@@ -40,8 +40,8 @@
 #End Region
 
 Imports System.Runtime.CompilerServices
-Imports Microsoft.VisualBasic
 Imports Microsoft.VisualBasic.CommandLine.Reflection
+Imports Microsoft.VisualBasic.ComponentModel.Collection
 Imports Microsoft.VisualBasic.Linq
 Imports Microsoft.VisualBasic.Scripting.MetaData
 Imports SMRUCC.genomics.Analysis.FBA_DP.Models.rFBA

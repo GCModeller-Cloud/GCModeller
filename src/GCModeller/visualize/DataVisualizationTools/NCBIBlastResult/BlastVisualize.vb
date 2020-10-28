@@ -1,4 +1,4 @@
-﻿#Region "Microsoft.VisualBasic::58b3a71ae4db168465b1b65cd7ee0223, visualize\DataVisualizationTools\NCBIBlastResult\BlastVisualize.vb"
+﻿#Region "Microsoft.VisualBasic::0d5fcab66bf36112ce28487403de8e5a, visualize\DataVisualizationTools\NCBIBlastResult\BlastVisualize.vb"
 
     ' Author:
     ' 
@@ -49,6 +49,7 @@ Imports System.Runtime.CompilerServices
 Imports System.Text.RegularExpressions
 Imports Microsoft.VisualBasic.ApplicationServices.Terminal.ProgressBar
 Imports Microsoft.VisualBasic.CommandLine.Reflection
+Imports Microsoft.VisualBasic.ComponentModel.Collection
 Imports Microsoft.VisualBasic.ComponentModel.DataSourceModel
 Imports Microsoft.VisualBasic.ComponentModel.DataSourceModel.SchemaMaps
 Imports Microsoft.VisualBasic.ComponentModel.Ranges
@@ -784,7 +785,7 @@ CONTINUTE:
                             Dim Right As Integer = Segment.QueryEnd
 
                             If Left > Right Then
-                                Call Left.SwapWith(Right)
+                                Call Left.Swap(Right)
                             End If
 
                             Dim Loci As Point = New Point(margin + Left * ConvertFactor, Y)

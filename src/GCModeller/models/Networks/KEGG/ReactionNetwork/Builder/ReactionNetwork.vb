@@ -1,4 +1,4 @@
-﻿#Region "Microsoft.VisualBasic::9b4e8ee48a094465f436d60bee905bd2, KEGG\ReactionNetwork\Builder\ReactionNetwork.vb"
+﻿#Region "Microsoft.VisualBasic::fba2e5c49ed3cbeb8a9e3c4d038f7004, models\Networks\KEGG\ReactionNetwork\Builder\ReactionNetwork.vb"
 
     ' Author:
     ' 
@@ -34,11 +34,14 @@
     '     Class ReactionNetworkBuilder
     ' 
     '         Constructor: (+1 Overloads) Sub New
+    ' 
+    '         Function: compoundEdge, enzymeBridgedEdges
+    ' 
     '         Sub: createEdges
     ' 
     '     Module Extensions
     ' 
-    '         Function: BuildModel
+    '         Function: BuildModel, GetReactions
     ' 
     ' 
     ' /********************************************************************************/
@@ -53,6 +56,8 @@ Imports Microsoft.VisualBasic.Imaging
 Imports Microsoft.VisualBasic.Language
 Imports Microsoft.VisualBasic.Linq
 Imports Microsoft.VisualBasic.Serialization.JSON
+Imports Microsoft.VisualBasic.Text.Xml.Models
+Imports SMRUCC.genomics.Assembly.KEGG.DBGET.bGetObject
 
 Namespace ReactionNetwork
 
@@ -62,6 +67,8 @@ Namespace ReactionNetwork
     ''' </summary>
     Public Class ReactionNetworkBuilder : Inherits BuilderBase
 
+        ReadOnly enzymeBridged As Boolean = True
+
         ''' <summary>
         ''' 
         ''' </summary>
@@ -69,9 +76,13 @@ Namespace ReactionNetwork
         ''' <param name="compounds">KEGG化合物编号，``{kegg_id => compound name}``</param>
         Sub New(br08901 As IEnumerable(Of ReactionTable),
                 compounds As IEnumerable(Of NamedValue(Of String)),
-                Optional ignoresCommonList As Boolean = True)
+                Optional ignoresCommonList As Boolean = True,
+                Optional enzymeBridged As Boolean = True,
+                Optional edgeFilter As EdgeFilterEngine = EdgeFilterEngine.ReactionLinkFilter)
 
-            Call MyBase.New(br08901, compounds, blue, ignoresCommonList)
+            Call MyBase.New(br08901, compounds, blue, ignoresCommonList, edgeFilter)
+
+            Me.enzymeBridged = enzymeBridged
         End Sub
 
         ''' <summary>
@@ -81,6 +92,29 @@ Namespace ReactionNetwork
         ''' <param name="a"></param>
         ''' <param name="b"></param>
         Protected Overrides Sub createEdges(commons As String(), a As Node, b As Node)
+            If enzymeBridged Then
+                For Each edge In enzymeBridgedEdges(commons, a, b)
+                    Call addNewEdge(edge)
+                Next
+            Else
+                Call addNewEdge(compoundEdge(commons, a, b))
+            End If
+        End Sub
+
+        Private Function compoundEdge(commons As String(), a As Node, b As Node) As Edge
+            Return New Edge With {
+                .U = a,
+                .V = b,
+                .weight = commons.Length,
+                .data = New EdgeData With {
+                    .Properties = New Dictionary(Of String, String) From {
+                        {"kegg", commons.GetJson}
+                    }
+                }
+            }
+        End Function
+
+        Private Iterator Function enzymeBridgedEdges(commons As String(), a As Node, b As Node) As IEnumerable(Of Edge)
             ' each enzyme is an edge
             ' For Each rid As String In commons
             ' Dim geneNames = networkBase(rid)
@@ -105,7 +139,7 @@ Namespace ReactionNetwork
                 rNode = nodes(rid.label)
             End If
 
-            Call New Edge With {
+            Yield New Edge With {
                 .U = a,
                 .V = rNode,
                 .data = New EdgeData With {
@@ -115,9 +149,9 @@ Namespace ReactionNetwork
                     }
                 },
                 .weight = rid.geneSymbols.TryCount
-            }.DoCall(AddressOf addNewEdge)
+            }
 
-            Call New Edge With {
+            Yield New Edge With {
                 .U = rNode,
                 .V = b,
                 .data = New EdgeData With {
@@ -127,8 +161,8 @@ Namespace ReactionNetwork
                     }
                 },
                 .weight = rid.geneSymbols.TryCount
-            }.DoCall(AddressOf addNewEdge)
-        End Sub
+            }
+        End Function
     End Class
 
     <HideModuleName>
@@ -156,7 +190,9 @@ Namespace ReactionNetwork
                                    Optional enzymes As Dictionary(Of String, String()) = Nothing,
                                    Optional enzymaticRelated As Boolean = True,
                                    Optional filterByEnzymes As Boolean = False,
-                                   Optional ignoresCommonList As Boolean = True) As NetworkGraph
+                                   Optional ignoresCommonList As Boolean = True,
+                                   Optional enzymeBridged As Boolean = True,
+                                   Optional strictReactionNetwork As Boolean = False) As NetworkGraph
 
             Dim source As ReactionTable()
 
@@ -177,11 +213,49 @@ Namespace ReactionNetwork
             Dim builderSession As New ReactionNetworkBuilder(
                 br08901:=source,
                 compounds:=compounds,
-                ignoresCommonList:=ignoresCommonList
+                ignoresCommonList:=ignoresCommonList,
+                enzymeBridged:=enzymeBridged
             )
-            Dim g As NetworkGraph = builderSession.BuildModel(extended, enzymes, enzymaticRelated)
+            Dim g As NetworkGraph = builderSession.BuildModel(
+                extended:=extended,
+                enzymeInfo:=enzymes,
+                enzymeRelated:=enzymaticRelated,
+                strictReactionNetwork:=strictReactionNetwork
+            )
 
             Return g
+        End Function
+
+        ''' <summary>
+        ''' 
+        ''' </summary>
+        ''' <param name="pathway"></param>
+        ''' <param name="reactions"></param>
+        ''' <returns></returns>
+        ''' <remarks>
+        ''' we are not going to add the non-enzymics reaction into each pathway map
+        ''' because this operation will caused all of the pathway map contains the 
+        ''' similar compound profile which is bring by all of the non-enzymics reactions.
+        ''' </remarks>
+        <Extension>
+        Public Iterator Function GetReactions(pathway As Pathway, reactions As Dictionary(Of String, ReactionTable())) As IEnumerable(Of ReactionTable)
+            For Each ko As NamedValue In pathway.KOpathway.JoinIterates(pathway.modules)
+                If reactions.ContainsKey(ko.name) Then
+                    For Each item In reactions(ko.name)
+                        Yield item
+                    Next
+                End If
+            Next
+
+            'For Each item As ReactionTable In reactions.Values _
+            '    .IteratesALL _
+            '    .GroupBy(Function(a) a.entry) _
+            '    .Select(Function(a) a.First)
+
+            '    If item.EC.IsNullOrEmpty AndAlso item.KO.IsNullOrEmpty Then
+            '        Yield item
+            '    End If
+            'Next
         End Function
     End Module
 End Namespace

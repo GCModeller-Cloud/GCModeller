@@ -1,4 +1,4 @@
-﻿#Region "Microsoft.VisualBasic::7392876bf13885efa480ec3fe7224860, Microsoft.VisualBasic.Core\ApplicationServices\Tools\Resources.vb"
+﻿#Region "Microsoft.VisualBasic::a5bdbefd405a19d03854b231540513fe, Microsoft.VisualBasic.Core\ApplicationServices\Tools\Resources.vb"
 
     ' Author:
     ' 
@@ -37,7 +37,8 @@
     ' 
     '         Constructor: (+5 Overloads) Sub New
     ' 
-    '         Function: DirectLoadFrom, (+2 Overloads) GetObject, (+2 Overloads) GetStream, (+3 Overloads) GetString, LoadMy
+    '         Function: DirectLoadFrom, findResourceAssemblyFileName, (+2 Overloads) GetObject, (+2 Overloads) GetStream, (+3 Overloads) GetString
+    '                   LoadMy
     ' 
     '         Sub: doLoad, resourceAssemblyParser
     ' 
@@ -292,31 +293,38 @@ Namespace ApplicationServices
         ''' </summary>
         ''' <param name="assm"></param>
         Sub New(assm As Assembly)
-            Dim dllFile As String = assm.Location.ParentPath & "/Resources/" & FileIO.FileSystem.GetFileInfo(assm.Location).Name
+            Call Me.New(findResourceAssemblyFileName(assm))
+        End Sub
+
+        Sub New(dll As String)
+            Call resourceAssemblyParser(fileName:=FileIO.FileSystem.GetFileInfo(dll).FullName)
+        End Sub
+
+        Private Shared Function findResourceAssemblyFileName(assm As Assembly) As String
+            Dim resourceName As String = "Resources/" & FileIO.FileSystem.GetFileInfo(assm.Location).Name
+            Dim dllFile As String = $"{assm.Location.ParentPath}/{resourceName}"
 
             If Not dllFile.FileExists Then
-                dllFile = App.HOME & "/Resources/" & FileIO.FileSystem.GetFileInfo(assm.Location).Name
+                dllFile = $"{App.CurrentDirectory}/{resourceName}"
+            End If
+            If Not dllFile.FileExists Then
+                dllFile = $"{App.HOME}/{resourceName}"
             End If
             If Not dllFile.FileExists Then
                 Throw New EntryPointNotFoundException("missing assembly resource module: " & dllFile)
             Else
-                FileName = FileIO.FileSystem.GetFileInfo(dllFile).FullName
+                Return FileIO.FileSystem.GetFileInfo(dllFile).FullName
             End If
+        End Function
 
-            Call resourceAssemblyParser()
-        End Sub
-
-        Sub New(dll As String)
-            FileName = FileIO.FileSystem.GetFileInfo(dll).FullName
-            Call resourceAssemblyParser()
-        End Sub
-
-        Private Sub resourceAssemblyParser()
-            If FileName.FileExists Then
-                Call Assembly.LoadFile(FileName).DoCall(AddressOf doLoad)
+        Private Sub resourceAssemblyParser(fileName As String)
+            If fileName.FileExists Then
+                Call Assembly.LoadFile(fileName).DoCall(AddressOf doLoad)
             Else
-                Throw New DllNotFoundException($"Missing required resources satellite assembly file: {FileName.FileName}!")
+                Throw New DllNotFoundException($"Missing required resources satellite assembly file: {fileName.FileName}!")
             End If
+
+            _FileName = fileName
         End Sub
 
         Private Sub doLoad(assm As Assembly)

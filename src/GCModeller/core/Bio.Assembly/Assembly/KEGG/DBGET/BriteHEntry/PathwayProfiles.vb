@@ -1,4 +1,4 @@
-﻿#Region "Microsoft.VisualBasic::b913d21268339bbf1b37059a6ff71d76, Bio.Assembly\Assembly\KEGG\DBGET\BriteHEntry\PathwayProfiles.vb"
+﻿#Region "Microsoft.VisualBasic::b913d21268339bbf1b37059a6ff71d76, core\Bio.Assembly\Assembly\KEGG\DBGET\BriteHEntry\PathwayProfiles.vb"
 
     ' Author:
     ' 
@@ -42,6 +42,7 @@
 
 Imports System.Runtime.CompilerServices
 Imports Microsoft.VisualBasic.CommandLine.Reflection
+Imports Microsoft.VisualBasic.ComponentModel.Collection
 Imports Microsoft.VisualBasic.ComponentModel.DataSourceModel
 
 Namespace Assembly.KEGG.DBGET.BriteHEntry

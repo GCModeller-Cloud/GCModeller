@@ -1,4 +1,4 @@
-﻿#Region "Microsoft.VisualBasic::c5d7733701dc53c56fcd8bb1e347cf73, Bio.Assembly\Assembly\KEGG\Medical\Extensions.vb"
+﻿#Region "Microsoft.VisualBasic::c5d7733701dc53c56fcd8bb1e347cf73, core\Bio.Assembly\Assembly\KEGG\Medical\Extensions.vb"
 
     ' Author:
     ' 
@@ -42,6 +42,7 @@
 
 Imports System.Runtime.CompilerServices
 Imports System.Text.RegularExpressions
+Imports Microsoft.VisualBasic.ComponentModel.Collection
 Imports Microsoft.VisualBasic.Linq
 
 Namespace Assembly.KEGG.Medical

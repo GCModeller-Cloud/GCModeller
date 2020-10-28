@@ -1,4 +1,4 @@
-﻿#Region "Microsoft.VisualBasic::2016ce54569f429288764d4ee2f282df, vcell\Analysis.vb"
+﻿#Region "Microsoft.VisualBasic::2016ce54569f429288764d4ee2f282df, engine\vcell\Analysis.vb"
 
     ' Author:
     ' 
@@ -42,6 +42,7 @@
 Imports System.ComponentModel
 Imports Microsoft.VisualBasic.CommandLine
 Imports Microsoft.VisualBasic.CommandLine.Reflection
+Imports Microsoft.VisualBasic.ComponentModel.Collection
 Imports Microsoft.VisualBasic.ComponentModel.DataSourceModel
 Imports Microsoft.VisualBasic.Data.csv
 Imports Microsoft.VisualBasic.Serialization.JSON

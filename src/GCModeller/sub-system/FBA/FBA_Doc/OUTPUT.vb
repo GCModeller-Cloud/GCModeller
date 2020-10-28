@@ -1,4 +1,4 @@
-﻿#Region "Microsoft.VisualBasic::622298df355fc1929b5d2baea55e2fec, FBA\FBA_Doc\OUTPUT.vb"
+﻿#Region "Microsoft.VisualBasic::622298df355fc1929b5d2baea55e2fec, sub-system\FBA\FBA_Doc\OUTPUT.vb"
 
     ' Author:
     ' 
@@ -52,6 +52,7 @@
 #End Region
 
 Imports System.Xml.Serialization
+Imports Microsoft.VisualBasic.ComponentModel.Collection
 Imports Microsoft.VisualBasic.ComponentModel.Collection.Generic
 Imports Microsoft.VisualBasic.Language
 Imports Microsoft.VisualBasic.Serialization.JSON

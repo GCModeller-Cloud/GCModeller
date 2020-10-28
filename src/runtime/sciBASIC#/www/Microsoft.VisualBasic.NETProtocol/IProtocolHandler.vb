@@ -67,12 +67,13 @@ Imports Microsoft.VisualBasic.Net.Tcp
 Imports Microsoft.VisualBasic.Parallel
 
 ''' <summary>
-''' Object for handles the request <see cref="Protocol"/>.
+''' Object for handles the request <see cref="ProtocolAttribute"/>.
 ''' </summary>
 Public MustInherit Class IProtocolHandler
 
     MustOverride ReadOnly Property ProtocolEntry As Long
-    MustOverride Function HandleRequest(request As RequestStream, remoteDevcie As System.Net.IPEndPoint) As RequestStream
+    MustOverride Function HandleRequest(request As RequestStream, remoteDevcie As System.Net.IPEndPoint) As BufferPipe
+
 End Class
 
 #Region "Delegate Abstract Interface"

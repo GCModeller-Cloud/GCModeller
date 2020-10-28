@@ -1,12 +1,37 @@
 imports "visualkit.plots" from "visualkit";
-imports "geneExpression" from "phenotype_kit";
+imports ["geneExpression", "sampleInfo"] from "phenotype_kit";
 
 setwd(!script$dir);
 
-"E:\smartnucl_integrative\biodeep_pipeline\Biodeep_Rpackage\etc\pathway_network\msms_Intensity.csv"
+let expr0 = read.csv("msms_Intensity.csv", row_names = 1);
+
+expr0[, "mz"] = NULL;
+expr0[, "rt"] = NULL;
+
+print("we have all sample labels:");
+print(colnames(expr0));
+
+let sampleinfo = guess.sample_groups(colnames(expr0), raw_list = FALSE);
+
+print("a possible sample groups that parsed from the given sample labels:");
+print(sampleinfo);
+
+let patterns = expr0
 :> load.expr
+:> average(sampleinfo)
 :> relative
-:> expression.cmeans_pattern(dim = [4,4])
-:> plot.expression_patterns()
+:> expression.cmeans_pattern(dim = [3, 3], fuzzification = 5, threshold = 0.001)
+;
+
+print("view patterns result:");
+print(patterns);
+
+patterns
+:> plot.expression_patterns(size = [6000, 4500], colorSet = "Jet")
 :> save.graphics(file = "./patterns.png")
+;
+
+patterns
+:> cmeans_matrix
+:> write.csv(file = "./patterns.csv")
 ;

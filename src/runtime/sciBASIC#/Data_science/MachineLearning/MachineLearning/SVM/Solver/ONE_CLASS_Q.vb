@@ -45,23 +45,21 @@
 #End Region
 
 Imports Microsoft.VisualBasic.Language
-Imports Microsoft.VisualBasic.Text
-Imports stdNum = System.Math
 
 Namespace SVM
 
-    Friend Class ONE_CLASS_Q
-        Inherits Kernel
+    Friend Class ONE_CLASS_Q : Inherits Kernel
 
-        Private ReadOnly cache As Cache
-        Private ReadOnly QD As Double()
+        ReadOnly cache As Cache
+        ReadOnly QD As Double()
 
         Public Sub New(prob As Problem, param As Parameter)
-            MyBase.New(prob.Count, prob.X, param)
-            cache = New Cache(prob.Count, CLng(param.CacheSize) * (1 << 20))
-            QD = New Double(prob.Count - 1) {}
+            MyBase.New(prob.count, prob.X, param)
 
-            For i = 0 To prob.Count - 1
+            cache = New Cache(prob.count, CLng(param.cacheSize) * (1 << 20))
+            QD = New Double(prob.count - 1) {}
+
+            For i = 0 To prob.count - 1
                 QD(i) = KernelFunction(i, i)
             Next
         End Sub

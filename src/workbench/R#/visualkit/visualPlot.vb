@@ -47,14 +47,21 @@ Imports System.Runtime.CompilerServices
 Imports Microsoft.VisualBasic.CommandLine.Reflection
 Imports Microsoft.VisualBasic.ComponentModel.Collection
 Imports Microsoft.VisualBasic.ComponentModel.DataSourceModel
+Imports Microsoft.VisualBasic.ComponentModel.Ranges.Model
+Imports Microsoft.VisualBasic.Data.visualize.KMeans
+Imports Microsoft.VisualBasic.DataMining.KMeans
 Imports Microsoft.VisualBasic.Imaging
+Imports Microsoft.VisualBasic.Imaging.BitmapImage
 Imports Microsoft.VisualBasic.Imaging.Drawing2D
+Imports Microsoft.VisualBasic.Imaging.Drawing3D
 Imports Microsoft.VisualBasic.Imaging.Driver
 Imports Microsoft.VisualBasic.Linq
 Imports Microsoft.VisualBasic.MIME.Markup.HTML.CSS
 Imports Microsoft.VisualBasic.Scripting.MetaData
+Imports Microsoft.VisualBasic.Scripting.Runtime
 Imports SMRUCC.genomics.Analysis.GO
 Imports SMRUCC.genomics.Analysis.HTS.DataFrame
+Imports SMRUCC.genomics.Analysis.HTS.Proteomics
 Imports SMRUCC.genomics.Analysis.Microarray.KOBAS
 Imports SMRUCC.genomics.Assembly.KEGG.DBGET.BriteHEntry
 Imports SMRUCC.genomics.Data.GeneOntology.OBO
@@ -230,29 +237,153 @@ Module visualPlot
         }
     End Function
 
-    <ExportAPI("expression.cmeans_pattern")>
-    Public Function CmeansPattern(matrix As Matrix, <RRawVectorArgument> Optional [dim] As Object = "3,3") As ExpressionPattern
-        Return InteropArgumentHelper _
-            .getSize([dim], "3,3") _
-            .Split(","c) _
-            .Select(AddressOf Integer.Parse) _
-            .DoCall(Function(dimension)
-                        Return ExpressionPattern.CMeansCluster(matrix, [dim]:=dimension.ToArray)
-                    End Function)
-    End Function
-
+    ''' <summary>
+    ''' Visualize of the gene expression patterns across different sample groups. 
+    ''' </summary>
+    ''' <param name="matrix"></param>
+    ''' <param name="size"></param>
+    ''' <param name="padding"></param>
+    ''' <param name="bg"></param>
+    ''' <param name="colorSet">color set for visualize the cmeans membership</param>
+    ''' <returns></returns>
     <ExportAPI("plot.expression_patterns")>
     Public Function PlotExpressionPatterns(matrix As ExpressionPattern,
                                            <RRawVectorArgument>
-                                           Optional size As Object = "2400,2100",
+                                           Optional size As Object = "2400,2700",
                                            <RRawVectorArgument>
-                                           Optional padding As Object = g.DefaultPadding,
-                                           Optional bg As Object = "white") As Object
+                                           Optional padding As Object = g.DefaultUltraLargePadding,
+                                           Optional bg As Object = "white",
+                                           Optional colorSet$ = "PiYG:c8",
+                                           Optional levels% = 25,
+                                           Optional clusterLabelStyle As String = CSSFont.PlotSubTitle,
+                                           Optional legendTitleStyle As String = CSSFont.Win7Small,
+                                           Optional legendTickStyle As String = CSSFont.Win7Small,
+                                           Optional axisTickCSS$ = CSSFont.Win10Normal,
+                                           Optional axisLabelCSS$ = CSSFont.Win7Small) As Object
 
         Return matrix.DrawMatrix(
             size:=InteropArgumentHelper.getSize(size),
             padding:=InteropArgumentHelper.getPadding(padding),
-            bg:=InteropArgumentHelper.getColor(bg, "white")
+            bg:=InteropArgumentHelper.getColor(bg, "white"),
+            colorSet:=colorSet,
+            levels:=levels,
+            clusterLabelStyle:=clusterLabelStyle,
+            legendTickStyle:=legendTickStyle,
+            legendTitleStyle:=legendTitleStyle,
+            axisLabelCSS:=axisLabelCSS,
+            axisTickCSS:=axisTickCSS
         )
+    End Function
+
+    <ExportAPI("volcano.plot")>
+    Public Function VolcanoPlot(genes As DEP_iTraq(),
+                                <RRawVectorArgument> Optional size As Object = "2400,2700",
+                                <RRawVectorArgument> Optional padding As Object = g.DefaultUltraLargePadding,
+                                Optional bg As Object = "white") As Object
+
+    End Function
+
+    ''' <summary>
+    ''' 
+    ''' </summary>
+    ''' <param name="matrix"></param>
+    ''' <param name="size"></param>
+    ''' <param name="padding"></param>
+    ''' <param name="bg"></param>
+    ''' <param name="colorSet$"></param>
+    ''' <param name="viewAngle"></param>
+    ''' <param name="viewDistance#"></param>
+    ''' <param name="qDisplay">quantile value for display the gene labels</param>
+    ''' <returns></returns>
+    <ExportAPI("plot.cmeans3D")>
+    Public Function PlotCMeans3D(matrix As ExpressionPattern,
+                                 Optional kmeans_n As Integer = 3,
+                                 <RRawVectorArgument>
+                                 Optional size As Object = "2400,2700",
+                                 <RRawVectorArgument>
+                                 Optional padding As Object = g.DefaultUltraLargePadding,
+                                 Optional bg As Object = "white",
+                                 Optional colorSet$ = "red,blue,green",
+                                 <RRawVectorArgument(GetType(Double))>
+                                 Optional viewAngle As Object = "30,60,-56.25",
+                                 Optional viewDistance# = 2500,
+                                 Optional qDisplay# = 0.9,
+                                 Optional prefix$ = "Cluster:  #",
+                                 Optional env As Environment = Nothing) As Object
+
+        Dim clusterData As EntityClusterModel() = matrix.Patterns _
+            .Select(Function(a)
+                        Return New EntityClusterModel With {
+                            .ID = a.uid,
+                            .Cluster = a.cluster,
+                            .Properties = a.memberships _
+                                .ToDictionary(Function(t) (t.Key + 1).ToString,
+                                              Function(t)
+                                                  Return t.Value * 100
+                                              End Function)
+                        }
+                    End Function) _
+            .ToArray
+        Dim normRange As DoubleRange = {0, 100}
+        Dim clusterNMembers As Integer = clusterData.Length
+
+        For Each project As String In clusterData.Select(Function(a) a.Properties.Keys).IteratesALL.Distinct.ToArray
+            Dim v = clusterData.Select(Function(a) a(project)).ToArray
+            Dim range = v.Range
+            Dim map As Double
+
+            For i As Integer = 0 To clusterNMembers - 1
+                map = range.ScaleMapping(clusterData(i)(project), normRange)
+                clusterData(i)(project) = map
+            Next
+        Next
+
+        clusterData = clusterData _
+            .Kmeans(
+                expected:=kmeans_n,
+                debug:=env.globalEnvironment.debugMode
+            ) _
+            .ToArray
+
+        Dim camera As New Camera With {
+            .fov = 500000,
+            .screen = InteropArgumentHelper.getSize(size).SizeParser,
+            .viewDistance = viewDistance,
+            .angleX = DirectCast(viewAngle, Double())(0),
+            .angleY = DirectCast(viewAngle, Double())(1),
+            .angleZ = DirectCast(viewAngle, Double())(2)
+        }
+        Dim category As Dictionary(Of NamedCollection(Of String)) = clusterData _
+            .GroupBy(Function(a) a.Cluster) _
+            .ToDictionary(Function(a) a.Key,
+                          Function(a)
+                              Return New NamedCollection(Of String) With {
+                                  .name = $"Cluster Dimension #{a.Key}",
+                                  .value = {a.Key}
+                              }
+                          End Function)
+
+        Dim arrowFactor$ = "1,2"
+
+        If Not prefix.StringEmpty Then
+            For Each protein As EntityClusterModel In clusterData
+                protein.Cluster = prefix & protein.Cluster
+            Next
+        End If
+
+        Return clusterData _
+            .Scatter3D(
+                catagory:=category,
+                camera:=camera,
+                bg:=bg,
+                padding:=InteropArgumentHelper.getPadding(padding),
+                size:=InteropArgumentHelper.getSize(size),
+                schema:=colorSet,
+                arrowFactor:=arrowFactor,
+                labelsQuantile:=qDisplay,
+                showLegend:=False
+            ) _
+            .AsGDIImage _
+            .CorpBlank(30, Color.White)
     End Function
 End Module
